@@ -1,0 +1,53 @@
+.v15-desk-container {
+    background-color: #f0f2f5; /* Grayish background */
+    min-height: 100vh;
+    padding: 60px 20px;
+    margin: -15px;
+}
+
+.v15-grid {
+    display: grid;
+    /* This makes the grid auto-adapt to any screen size */
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 40px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    justify-items: center;
+}
+
+.v15-card {
+    cursor: pointer;
+    text-align: center;
+    transition: transform 0.2s;
+}
+
+.v15-card:hover {
+    transform: scale(1.1);
+}
+
+.v15-icon-wrapper {
+    width: 85px;
+    height: 85px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    color: white;
+    font-size: 32px;
+    box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+}
+
+/* Auto-assign colors to icons to mimic the v12 look */
+.v15-card:nth-child(5n+1) .v15-icon-wrapper { background-color: #ff9800; }
+.v15-card:nth-child(5n+2) .v15-icon-wrapper { background-color: #4caf50; }
+.v15-card:nth-child(5n+3) .v15-icon-wrapper { background-color: #2196f3; }
+.v15-card:nth-child(5n+4) .v15-icon-wrapper { background-color: #e91e63; }
+.v15-card:nth-child(5n+5) .v15-icon-wrapper { background-color: #795548; }
+
+.v15-text {
+    margin-top: 12px;
+    color: #000000;
+    font-weight: 500;
+    text-shadow: none;
+}
