@@ -10,7 +10,10 @@ app_license = "mit"
 
 # We MUST include the JS and CSS globally so the redirect and purple theme 
 # can be applied effectively.
-app_include_css = "/assets/v15_desk/css/v15_desktop.css"
+app_include_css = [
+    "/assets/frappe/css/fonts/fontawesome/font-awesome.min.css",
+    "/assets/v15_desk/css/v15_desktop.css"
+]
 app_include_js = [
     "/assets/v15_desk/js/desk_redirect.js"
 ]

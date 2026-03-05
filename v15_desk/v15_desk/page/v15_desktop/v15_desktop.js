@@ -5,68 +5,59 @@ frappe.pages['v15_desktop'].on_page_load = function(wrapper) {
         single_column: true
     });
 
-    // 1. UI Cleanup to match the v12 full-screen look
-    // This hides the v15 sidebar and breadcrumbs to let the grid auto-adapt to full width
+    // 1. UI Cleanup: Remove purple overrides and hide sidebar
+    // We reset colors to allow the CSS to take over for a clean light theme
     $('.layout-side-section').hide();
     $('.page-head').hide();
-    $('.layout-main-section').css('padding-top', '0');
+    $('.navbar').css('background-color', ''); // Resetting navbar to standard v15 white
+    
+    $('.layout-main-section').css({
+        'padding-top': '0',
+        'max-width': '100%',
+        'background-color': '#f4f5f7' // Matches the light gray in our CSS
+    });
 
-    // 2. Setup the Main Container
-    // We empty the section first to prevent duplicate grids on refresh
+    // 2. Setup Container
     $(wrapper).find(".layout-main-section").empty().append(`
         <div class="v15-desk-container">
             <div id="v15-grid" class="v15-grid"></div>
         </div>
     `);
 
-    // 3. Load Data from the correct App namespace (v15_desk)
+    // 3. Load Desktop Data
     frappe.call({
-        // Updated method path to reflect your actual app name: v15_desk
         method: "v15_desk.v15_desk.page.v15_desktop.v15_desktop.get_desktop_data",
         callback: function(r) {
             if (r.message) {
                 const grid = $(wrapper).find("#v15-grid");
-                grid.empty(); // Safety clear
+                grid.empty(); 
 
                 r.message.forEach(m => {
-                    // Badge logic for notifications (red dots)
-                    let badge = m.open_count > 0 ? `<div class="v15-badge">${m.open_count}</div>` : '';
+                    // Handle notifications
+                    let badge_val = m.open_count > 99 ? '99+' : m.open_count;
+                    let badge = m.open_count > 0 ? `<div class="v15-badge">${badge_val}</div>` : '';
                     
-                    // Fallback to a default blue if no color is defined in the Workspace
-                    let icon_color = m.indicator_color || '#3498db';
+                    // Icon logic: Use the pre-formatted string from our Python script
+                    // This ensures icons like 'Home' or 'Accounting' finally appear
+                    let icon_class = m.icon || 'fa fa-th-large';
                     
-                    // Format icon - ensure proper Font Awesome format
-                    let icon_class = m.icon || 'fa-th-large';
-                    
-                    // Clean up icon name
-                    icon_class = icon_class.trim();
-                    if (!icon_class.startsWith('fa-') && !icon_class.includes(' ')) {
-                        icon_class = `fa-${icon_class}`;
-                    }
-                    
-                    // Build proper Font Awesome class
-                    let fa_class = 'fa ' + icon_class;
-                    
-                    // Construct the Icon Card
+                    // Construct Icon Card
                     let card = $(`
                         <div class="v15-card" title="${__(m.label)}">
-                            <div class="v15-icon-wrapper" style="background-color: ${icon_color}">
-                                <i class="${fa_class}"></i>
+                            <div class="v15-icon-wrapper">
+                                <i class="${icon_class}"></i>
                                 ${badge}
                             </div>
                             <div class="v15-text">${__(m.label)}</div>
                         </div>
                     `).appendTo(grid);
 
-                    // Routing to the actual Workspace on click
+                    // Navigation logic
                     card.on('click', () => {
                         frappe.set_route('Workspaces', m.name);
                     });
                 });
             }
-        },
-        error: function(r) {
-            frappe.msgprint(__('Verify that the app "v15_desk" is installed and the python method exists.'));
         }
     });
 };
